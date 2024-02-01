@@ -21,7 +21,6 @@ pub async fn get_traffic_data(
     Query(query_params): Query<TrafficQueryParams>,
     State(data): State<Arc<AppState>>,
 ) -> Result<impl IntoResponse, (StatusCode, Json<serde_json::Value>)> {
-    println!("hello");
     let traffic_data = sqlx::query_as!(
         Traffic,
         "SELECT * FROM traffic_data WHERE district = $1 AND device = $2",
