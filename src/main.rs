@@ -33,7 +33,7 @@ async fn main() {
         .await
     {
         Ok(pool) => {
-            println!("✅Connection to the database is successful!");
+            println!("✅ Connection to the database is successful!");
             pool
         }
         Err(err) => {
@@ -52,9 +52,9 @@ async fn main() {
 
     let app = routes::create_router(app_state).layer(cors);
 
-    println!("Server started successfully!");
-    println!("Server running on port 3000");
-    println!("Visit http://localhost:3000/api to see the response");
+    println!("✅ Server started successfully!");
+    println!("✅ Server running on port 3000");
+    println!("✅ Visit http://localhost:3000/api to see the response");
 
     // run our app with hyper, listening globally on port 3000
     let listener: tokio::net::TcpListener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
