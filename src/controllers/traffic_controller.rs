@@ -28,7 +28,7 @@ pub async fn get_traffic_data(
     )
     .fetch_all(&data.db)
     .await;
-    // let traffic_data = Traffic::get_traffic_data(query_params.district, query_params.device).await;
+
     match traffic_data {
         Ok(traffic_data) => Ok(Json(traffic_data)),
         Err(err) => {
@@ -52,6 +52,7 @@ pub async fn get_traffic_data_by_zone(
     )
     .fetch_all(&data.db)
     .await;
+
     match traffic_data {
         Ok(traffic_data) => Ok(Json(traffic_data)),
         Err(err) => {
