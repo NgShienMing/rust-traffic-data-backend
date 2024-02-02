@@ -42,7 +42,7 @@ async fn main() {
         }
     };
 
-    // Build our application with a single route
+    // Initialize backend
     let app_state: Arc<AppState> = Arc::new(AppState{db: pool.clone()});
     let cors = CorsLayer::new()
         .allow_origin("http://localhost:3000".parse::<HeaderValue>().unwrap())
