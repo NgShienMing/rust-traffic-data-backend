@@ -1,0 +1,48 @@
+version: '3'
+services:
+  api-rust_traffic-analytics:
+    image: "${COMPOSE_PROJECT_NAME}/${PROJECT_DIRNAME}:latest"
+    container_name: api-rust_${COMPOSE_PROJECT_NAME}
+    ports:
+      - 3000:3000
+    mem_limit: 1000m
+    networks:
+      - net
+    logging:
+      options:
+        max-size: "100k"
+        max-file: "500"
+    # depends_on:
+    #   - db_traffic-analytics
+    command: ./rust-traffic-data-backend
+    environment:
+      - DATABASE_URL=${DATABASE_CONTAINER_URL}
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+  # db_traffic-analytics:
+  #   image: postgres
+  #   container_name: db_traffic-analytics
+  #   restart: unless-stopped
+  #   mem_limit: 1000m
+  #   networks:
+  #       - net
+  #   ports:
+  #       - 5432:5432
+  #   logging:
+  #       options:
+  #           max-size: "100k"
+  #           max-file: "500"
+  #   env_file:
+  #     - .env
+  #   volumes:
+  #       - /etc/timezone:/etc/timezone:ro
+  #       - /etc/localtime:/etc/localtime:ro
+  #       - pgdata:/var/lib/postgresql/data
+
+networks:
+  net:
+
+volumes:
+  pgdata:
