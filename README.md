@@ -1,6 +1,6 @@
 # Rust backend
 
-Exploration on using Rust to develop backend
+Exploration on using Rust to develop backend, for a detailed guide, please go to [Rust CRUD API Example with Axum and PostgreSQL](https://codevoweb.com/rust-crud-api-example-with-axum-and-postgresql/)
 
 ## Step by step guide on how to create a Rust backend
 
