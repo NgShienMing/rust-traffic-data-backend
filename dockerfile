@@ -1,41 +1,30 @@
-# Builder Stage
-FROM rust:1.75 as builder
+FROM rust:1.75-slim-buster as builder
 ENV SQLX_OFFLINE=true
 
-# Create a new Rust project
-RUN USER=root cargo new --bin complete-restful-api-in-rust
-WORKDIR /complete-restful-api-in-rust
+# Create a new empty shell project
+RUN USER=root cargo new --bin rust-traffic-data-backend
+WORKDIR /rust-traffic-data-backend
 
-# Copy and build dependencies
-COPY Cargo.toml Cargo.lock ./
-RUN cargo build --release --locked
-RUN rm src/*.rs
+# Copy over your manifests
+COPY ./Cargo.lock ./Cargo.toml ./
 
-# Copy the source code and build the application
-COPY . .
-RUN cargo build --release --locked
+# This build step will cache your dependencies
+RUN cargo build --release && rm src/*.rs
 
-# Production Stage
-FROM debian:bullseye-slim
-ARG APP=/usr/src/app
+# Copy your source tree
+COPY ./src ./src
+COPY .env ./
 
-RUN apt-get update \
-    && apt-get install -y ca-certificates tzdata \
-    && rm -rf /var/lib/apt/lists/*
+# Build for release
+RUN rm ./target/release/deps/rust_traffic_data_backend*
+RUN cargo build --release
 
-ENV TZ=Etc/UTC \
-    APP_USER=appuser
+# Our final base
+FROM debian:buster-slim
 
-RUN groupadd $APP_USER \
-    && useradd -g $APP_USER $APP_USER \
-    && mkdir -p ${APP}
+# Copy the build artifact from the build stage
+COPY --from=builder /rust-traffic-data-backend/target/release/rust-traffic-data-backend .
 
-COPY --from=builder /complete-restful-api-in-rust/target/release/complete-restful-api-in-rust ${APP}/complete-restful-api-in-rust
-
-RUN chown -R $APP_USER:$APP_USER ${APP}
-
-USER $APP_USER
-WORKDIR ${APP}
-
-ENTRYPOINT ["./complete-restful-api-in-rust"]
-EXPOSE 8000
+# Set the startup command to run your binary
+EXPOSE 3000
+CMD ["./rust-traffic-data-backend"]
